@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace ebay_api_inventory;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
 public partial class MainWindow : Window
 {
     public MainWindow()

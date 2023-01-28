@@ -7,6 +7,21 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="500">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="Margin" Value="10,0,10,0"/>
+                </Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="10,10,10,10"/>
+                </Style>
+            </StackPanel.Resources>
+            <Label Content="Log In" HorizontalAlignment="Center"/>
+            <Label Content="Username" />
+            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="Username" VerticalAlignment="Top"/>
+            <Label Content="Password" />
+            <TextBox HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="Password" VerticalAlignment="Top"/>
+            <Button Content="Log In"/>
+        </StackPanel>
     </Grid>
 </Window>
