@@ -1,50 +1,63 @@
 ﻿using ebay_api_inventory.Screens.Settings;
-using System;
-using System.Collections.Generic;
+using ebay_api_inventory.Entities;
+using ebay_api_inventory.Utilities;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ebay_api_inventory;
 
 public partial class MainWindow : Window
 {
-    private string usernameText = "";
-    private string passwordText = "";
-
     public MainWindow()
     {
         InitializeComponent();
     }
 
-    private void Username_TextChanged(object sender, RoutedEventArgs e)
+    private void NavigateToOAuth()
     {
-        usernameText = UsernameTextBox.Text;
+        AppSettings settings = AppSettings.Get();
+        eBaySystem ebaySystem = (eBaySystem) UserSettings.Default.System;
+        string url = @"";
+        switch (ebaySystem)
+        {
+            case eBaySystem.Sandbox:
+                url = Endpoint.AuthDevelopmentREST.Value + 
+                    @"?client_id=" + settings.ClientIdDev + 
+                    @"&redirect_uri=" + settings.RedirectUriDev +
+                    @"&response_type=code" +
+                    @"&scope=https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.inventory.readonly";
+                break;
+            case eBaySystem.Production:
+                url = Endpoint.AuthProductionREST.Value + 
+                    @"?client_id=" + settings.ClientIdProd + 
+                    @"&redirect_uri=" + settings.RedirectUriProd +
+                    @"&response_type=code" +
+                    @"&scope=https://api.ebay.com/oauth/api_scope https://api.ebay.com/oauth/api_scope/sell.inventory.readonly";
+                break;
+            default:
+                break;
+        }
+
+        WebBrowser.Navigate(url);
     }
 
-    private void Password_Changed(object sender, RoutedEventArgs e)
+    private void SignInButton_Clicked(object sender, RoutedEventArgs e)
     {
-        passwordText = PasswordBox.Password;
-    }
-
-    private void LogInButton_Clicked(object sender, RoutedEventArgs e)
-    {
-        Debug.WriteLine("Log In with username " + this.usernameText + " and password " + this.passwordText);
+        WebBrowser.Visibility = Visibility.Visible;
+        SignInButton.Visibility = Visibility.Hidden;
+        NavigateToOAuth();
     }
 
     private void SettingsButton_Clicked(object sender, RoutedEventArgs e)
     {
         Settings settingsWindow = new Settings();
         settingsWindow.ShowDialog();
+    }
+
+    private void Browser_FinishedNavigating(object sender, NavigationEventArgs e)
+    {
+
     }
 }

@@ -8,64 +8,38 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="0.5*"/>
             <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="10*" />
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="0.5*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Column="1" Grid.Row="1">
-            <StackPanel.Resources>
-                <Style TargetType="{x:Type TextBox}">
-                    <Setter Property="Margin" Value="10,0,10,0"/>
+
+        <Button x:Name="SignInButton"
+                Content="Sign In" 
+                Click="SignInButton_Clicked" 
+                Grid.Column="1" 
+                Grid.Row="1" 
+                FontSize="24"
+                FontWeight="Bold"
+                BorderThickness="0"
+                Height="50">
+            <Button.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="10" />
                 </Style>
-                <Style TargetType="{x:Type PasswordBox}">
-                    <Setter Property="Margin" Value="10,0,10,0"/>
-                </Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Margin" Value="10,10,10,10"/>
-                </Style>
-            </StackPanel.Resources>
-            
-            <Label Content="eBay Log In" 
-                   HorizontalAlignment="Center" 
-                   FontWeight="Bold" 
-                   FontSize="20"/>
-            
-            <Label Content="Username" 
-                   FontSize="14" 
-                   FontWeight="Bold" />
-            <TextBox HorizontalAlignment="Stretch" 
-                     VerticalAlignment="Top"
-                     TextWrapping="Wrap" 
-                     FontSize="16"
-                     x:Name="UsernameTextBox" 
-                     TextChanged="Username_TextChanged"/>
-            
-            <Label Content="Password" 
-                   FontWeight="Bold"
-                   FontSize="14" />
-            <PasswordBox FontSize="16" 
-                         x:Name="PasswordBox" 
-                         PasswordChanged="Password_Changed" />
-            
-            <Button Content="Log In" 
-                    FontWeight="Bold"
-                    FontSize="16" 
-                    BorderBrush="{x:Null}" 
-                    Padding="5" 
-                    x:Name="LogIn" 
-                    Click="LogInButton_Clicked">
-                <Button.Resources>
-                    <Style TargetType="{x:Type Border}">
-                        <Setter Property="CornerRadius" Value="10" />
-                    </Style>
-                </Button.Resources>
-            </Button>
-        </StackPanel>
+            </Button.Resources>
+        </Button>
+
+        <WebBrowser x:Name="WebBrowser" 
+                    Grid.Column="1" 
+                    Grid.Row="1" 
+                    VerticalAlignment="Center" 
+                    Visibility="Hidden" 
+                    Navigated="Browser_FinishedNavigating" />
 
         <Button x:Name="SettingsButton"
                 Click="SettingsButton_Clicked"
