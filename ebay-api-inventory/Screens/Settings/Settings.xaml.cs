@@ -1,37 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace ebay_api_inventory.Screens.Settings;
 public partial class Settings : Window
 {
+    private eBaySystem ebaySystem; 
+
     public Settings()
     {
         InitializeComponent();
+        ebaySystem = (eBaySystem) UserSettings.Default.System;
+        InitializeRelevantRadioButton();
+    }
+
+    private void InitializeRelevantRadioButton()
+    {
+        switch (ebaySystem) 
+        {
+            case eBaySystem.Sandbox:
+                SandboxRadioButton.IsChecked = true;
+                break;
+            case eBaySystem.Production:
+                ProductionRadioButton.IsChecked = true;
+                break;
+            default:
+                break;
+        }
     }
 
     private void SandboxRadioButton_Clicked(object sender, RoutedEventArgs eventArgs)
     {
         ProductionRadioButton.IsChecked = false;
+        ebaySystem = eBaySystem.Sandbox;
     }
 
     private void ProductionRadioButton_Clicked(object sender, RoutedEventArgs eventArgs)
     {
         SandboxRadioButton.IsChecked = false;
+        ebaySystem = eBaySystem.Production;
     }
 
     private void SaveButton_Clicked(object sender, RoutedEventArgs eventArgs)
     {
-        // TODO: save to app settings which one they clicked
+        UserSettings.Default.System = (int) ebaySystem;
+        UserSettings.Default.Save();
+        Close();
     }
 }
