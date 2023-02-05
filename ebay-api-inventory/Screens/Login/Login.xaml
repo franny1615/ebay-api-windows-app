@@ -66,5 +66,14 @@
                 </Button.Resources>
             </Button>
         </StackPanel>
+
+        <Button x:Name="SettingsButton"
+                Click="SettingsButton_Clicked"
+                Content="Settings" 
+                Width="50" 
+                Height="25" 
+                Grid.Row="2" 
+                HorizontalAlignment="Left" 
+                Margin="10,0,0,0"/>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ebay_api_inventory.Screens.Settings;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -39,5 +40,11 @@ public partial class MainWindow : Window
     private void LogInButton_Clicked(object sender, RoutedEventArgs e)
     {
         Debug.WriteLine("Log In with username " + this.usernameText + " and password " + this.passwordText);
+    }
+
+    private void SettingsButton_Clicked(object sender, RoutedEventArgs e)
+    {
+        Settings settingsWindow = new Settings();
+        settingsWindow.ShowDialog();
     }
 }
