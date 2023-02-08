@@ -3,43 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ebay_api_inventory"
+        xmlns:local="clr-namespace:ebay_api_inventory" 
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" 
+        Height="450" 
+        Width="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*"/>
-            <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width="0.5*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.5*" />
-            <RowDefinition Height="5*" />
-            <RowDefinition Height="0.5*" />
+            <RowDefinition Height="90*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
 
-        <Button x:Name="SignInButton"
-                Content="Sign In" 
-                Click="SignInButton_Clicked" 
-                Grid.Column="1" 
-                Grid.Row="1" 
-                FontSize="24"
-                FontWeight="Bold"
-                BorderThickness="0"
-                Height="50">
-            <Button.Resources>
-                <Style TargetType="{x:Type Border}">
-                    <Setter Property="CornerRadius" Value="10" />
-                </Style>
-            </Button.Resources>
-        </Button>
-
-        <WebBrowser x:Name="WebBrowser" 
-                    Grid.Column="1" 
-                    Grid.Row="1" 
-                    VerticalAlignment="Center" 
-                    Visibility="Hidden" 
-                    Navigated="Browser_FinishedNavigating" />
+        <DockPanel Grid.Column="1" 
+                   Grid.Row="0">
+            <wv2:WebView2 x:Name="WebView"
+                          Source="https:\\www.google.com"
+                          VerticalAlignment="Stretch" 
+                          NavigationCompleted="Navigation_Finished"/>
+        </DockPanel>
 
         <Button x:Name="SettingsButton"
                 Click="SettingsButton_Clicked"

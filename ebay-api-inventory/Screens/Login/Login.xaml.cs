@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using Microsoft.Web.WebView2.Core;
 
 namespace ebay_api_inventory;
 
@@ -13,6 +14,13 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        InitializeAsync();
+    }
+
+    private async void InitializeAsync()
+    {
+        await WebView.EnsureCoreWebView2Async(null);
+        NavigateToOAuth();
     }
 
     private void NavigateToOAuth()
@@ -40,14 +48,7 @@ public partial class MainWindow : Window
                 break;
         }
 
-        WebBrowser.Navigate(url);
-    }
-
-    private void SignInButton_Clicked(object sender, RoutedEventArgs e)
-    {
-        WebBrowser.Visibility = Visibility.Visible;
-        SignInButton.Visibility = Visibility.Hidden;
-        NavigateToOAuth();
+        WebView.Source = new System.Uri(url);
     }
 
     private void SettingsButton_Clicked(object sender, RoutedEventArgs e)
@@ -56,7 +57,7 @@ public partial class MainWindow : Window
         settingsWindow.ShowDialog();
     }
 
-    private void Browser_FinishedNavigating(object sender, NavigationEventArgs e)
+    private void Navigation_Finished(object sender, CoreWebView2NavigationCompletedEventArgs e)
     {
 
     }
