@@ -61,9 +61,7 @@ public partial class MainWindow : Window
         settingsWindow.ShowDialog();
     }
 
-    private void Navigation_Finished(object sender, CoreWebView2NavigationCompletedEventArgs e) { }
-
-    private void WebResourceResponseReceived(object sender, CoreWebView2WebResourceResponseReceivedEventArgs e)
+    private void WebResourceResponseReceived(object? sender, CoreWebView2WebResourceResponseReceivedEventArgs e)
     {
         if(e.Request.Uri.Contains("https://signin.ebay.com/"))
         {

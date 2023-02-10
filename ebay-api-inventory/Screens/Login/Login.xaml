@@ -6,33 +6,14 @@
         xmlns:local="clr-namespace:ebay_api_inventory" 
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" 
-        Height="450" 
-        Width="800">
+        Title="Login" 
+        Height="1024" 
+        Width="1024">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="90*" />
-            <RowDefinition Height="10*" />
-        </Grid.RowDefinitions>
-
-        <DockPanel Grid.Column="1" 
-                   Grid.Row="0">
+        <DockPanel>
             <wv2:WebView2 x:Name="WebView"
                           Source="https:\\www.google.com"
-                          VerticalAlignment="Stretch" 
-                          NavigationCompleted="Navigation_Finished"/>
+                          VerticalAlignment="Stretch" />
         </DockPanel>
-
-        <Button x:Name="SettingsButton"
-                Click="SettingsButton_Clicked"
-                Background="Transparent"
-                Width="50" 
-                Height="25" 
-                Grid.Row="2" 
-                HorizontalAlignment="Left"
-                BorderThickness="0"
-                Margin="10,0,0,0">
-            <Image Source="/Resources/gear.png" ToolTip="Settings" />
-        </Button>
     </Grid>
 </Window>
