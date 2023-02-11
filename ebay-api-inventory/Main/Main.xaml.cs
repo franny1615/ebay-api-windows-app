@@ -20,6 +20,7 @@ public partial class Main : Window
     public Main()
     {
         InitializeComponent();
+        LoginButton.IsSelected = true;
     }
 
     private void SideBar_SelectionChanged(object sender, SelectionChangedEventArgs e)
