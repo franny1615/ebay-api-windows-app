@@ -1,5 +1,4 @@
-﻿using ebay_api_inventory.Screens.Settings;
-using ebay_api_inventory.Entities;
+﻿using ebay_api_inventory.Entities;
 using ebay_api_inventory.Utilities;
 using System.Diagnostics;
 using System.Windows;
@@ -9,11 +8,10 @@ using Microsoft.Web.WebView2.Core;
 using System.Web;
 using System.Threading;
 
-namespace ebay_api_inventory;
-
-public partial class MainWindow : Window
+namespace ebay_api_inventory.Main.Pages;
+public partial class Login : Page
 {
-    public MainWindow()
+    public Login()
     {
         InitializeComponent();
         InitializeAsync();
@@ -53,12 +51,6 @@ public partial class MainWindow : Window
         }
 
         WebView.Source = new System.Uri(url);
-    }
-
-    private void SettingsButton_Clicked(object sender, RoutedEventArgs e)
-    {
-        Settings settingsWindow = new Settings();
-        settingsWindow.ShowDialog();
     }
 
     private void WebResourceResponseReceived(object? sender, CoreWebView2WebResourceResponseReceivedEventArgs e)
