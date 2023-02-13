@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using Microsoft.Web.WebView2.Core;
 using System.Web;
 using System.Threading;
+using ebay_api_inventory.Network;
 
 namespace ebay_api_inventory.Main.Pages;
 public partial class Login : Page
@@ -68,9 +69,8 @@ public partial class Login : Page
 
             if (code != null && expiresIn != null)
             {
-                Debug.WriteLine(e.Request.Uri);
-                Debug.WriteLine(code);
-                Debug.WriteLine(expiresIn);
+                var authToken = new AuthToken();
+                var userAccessToken = authToken.ExchangeAsync(code);
             }
         }   
     }
