@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ebay_api_inventory.Entities;
+using ebay_api_inventory.Main.Pages.Dashboard;
 using ebay_api_inventory.Main.Pages.Login;
 using ebay_api_inventory.Main.Pages.Settings;
 
@@ -9,14 +10,9 @@ namespace ebay_api_inventory.Main;
 
 public partial class MainWindow : Window
 {
-    private MainViewModel mainViewModel;
-    private LoginViewModel loginViewModel; 
-
-    public MainWindow(MainViewModel mainViewModel)
+    public MainWindow()
     {
         InitializeComponent();
-        this.mainViewModel = mainViewModel;
-        loginViewModel = new LoginViewModel(loggedIn: UserLoggedIn);
         LoginButton.IsSelected = true;
     }
 
@@ -25,7 +21,8 @@ public partial class MainWindow : Window
         var selected = SideBar.SelectedItem as NavButton;
         if (selected == LoginButton)
         {
-            LoginPage loginPage = new LoginPage(loginViewModel);
+            LoginViewModel loginVM = new LoginViewModel(loggedIn: UserLoggedIn);
+            LoginPage loginPage = new LoginPage(loginVM);
             NavFrame.Navigate(loginPage);
         }
         else if (selected == SettingsButton)
@@ -37,6 +34,8 @@ public partial class MainWindow : Window
 
     private void UserLoggedIn(object? sender, UserAccessToken userAccessToken)
     {
-        Debug.WriteLine($"User Access Token: {userAccessToken.access_token}");
+        DashboardViewModel dashboardVM = new DashboardViewModel(userAccessToken);
+        DashboardPage dashboardPage = new DashboardPage(dashboardVM);
+        NavFrame.Navigate(dashboardPage);
     }
 }
