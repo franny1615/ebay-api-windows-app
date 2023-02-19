@@ -16,17 +16,6 @@ using System.Windows.Shapes;
 namespace ebay_api_inventory.Main;
 public class NavButton : ListBoxItem
 {
-    public Uri NavLink
-    {
-        get { return (Uri)GetValue(NavLinkProperty); }
-        set { SetValue(NavLinkProperty, value); }
-    }
-    public static readonly DependencyProperty NavLinkProperty = DependencyProperty.Register(
-        "NavLink",
-        typeof(Uri),
-        typeof(NavButton),
-        new PropertyMetadata(null));
-
     public Geometry Icon
     {
         get { return (Geometry)GetValue(IconProperty); }
