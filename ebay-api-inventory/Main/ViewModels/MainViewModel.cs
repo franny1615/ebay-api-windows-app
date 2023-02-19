@@ -7,12 +7,7 @@ using System.Threading.Tasks;
 
 namespace ebay_api_inventory.Main.ViewModels;
 
-public class MainViewModel: ViewModelBase
+public class MainViewModel
 {
-    public LoginViewModel loginViewModel; 
-
-    public MainViewModel() 
-    {
-        loginViewModel = new LoginViewModel();
-    }
+    public MainViewModel() { }
 }

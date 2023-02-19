@@ -36,9 +36,10 @@ class AuthToken
         request.Content = new FormUrlEncodedContent(bodyParameters);
 
         var response = await App.requestClient.SendAsync(request);
-        var responseString = await response.Content.ReadAsStringAsync();
+        string responseString = await response.Content.ReadAsStringAsync();
+        UserAccessToken? token = JsonSerializer.Deserialize<UserAccessToken>(responseString);
 
-        return JsonSerializer.Deserialize<UserAccessToken>(responseString);
+        return token;
     }
 
     private string ExchangeUrl(eBaySystem ebaySystem)

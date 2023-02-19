@@ -35,9 +35,10 @@ public partial class Login : Page
         {
             NavigateToOAuth();
         }
-        else
+        else if (loginViewModel.IsLoggedIn(e.Request))
         {
-            loginViewModel.CheckIfLoggedIn(e.Request);
+            NavigateToOAuth();
+            loginViewModel.ExchangeConsentTokenForUserAccessToken();
         }
     }
 }

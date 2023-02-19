@@ -14,18 +14,15 @@ using System.Web;
 
 namespace ebay_api_inventory.Main.ViewModels;
 
-public class LoginViewModel: ViewModelBase
+public class LoginViewModel
 {
-    private UserAccessToken userAccessToken
-    {
-        get { return userAccessToken; }
-        set { userAccessToken = value; OnPropertyChanged(userAccessToken.access_token); }
-    }
+    private string consentToken = string.Empty;
+    private EventHandler<UserAccessToken> loggedIn;
+    
 
-    private string error
+    public LoginViewModel(EventHandler<UserAccessToken> loggedIn)
     {
-        get { return error; }
-        set { error = value; OnPropertyChanged(error); }
+        this.loggedIn = loggedIn;
     }
 
     public string OAuthUrl() 
@@ -58,20 +55,19 @@ public class LoginViewModel: ViewModelBase
 
     public bool IsError(CoreWebView2WebResourceRequest uriToCheck)
     {
-        bool result = false;
         if (uriToCheck.Uri.Contains("https://signin.ebay.com/"))
         {
             string? error = HttpUtility.ParseQueryString(uriToCheck.Uri).Get("error");
             if(error != null && error == "access_denied")
             {
-                result = true;
+                return true;
             }
         }
 
-        return result;
+        return false;
     }
     
-    public void CheckIfLoggedIn(CoreWebView2WebResourceRequest uriToCheck) 
+    public bool IsLoggedIn(CoreWebView2WebResourceRequest uriToCheck) 
     {
         if (uriToCheck.Uri.Contains("https://signin.ebay.com/"))
         {
@@ -80,13 +76,34 @@ public class LoginViewModel: ViewModelBase
 
             if (code != null && expiresIn != null)
             {
-                AuthToken authToken = new AuthToken();
-                UserAccessToken? userAccessToken = authToken.ExchangeAsync(code).Result;
-                if (userAccessToken != null && userAccessToken.access_token != "")
-                {
-                    this.userAccessToken = userAccessToken;
-                }
+                this.consentToken = code;
+                return true;
             }
         }
+
+        return false;
+    }
+
+    public void ExchangeConsentTokenForUserAccessToken()
+    {
+        Task.Run(() =>
+        {
+            try
+            {
+                AuthToken authToken = new AuthToken();
+                UserAccessToken? userAccessToken = authToken.ExchangeAsync(this.consentToken).Result;
+                if (userAccessToken != null && userAccessToken.access_token != "")
+                {
+                    App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        loggedIn.Invoke(null, userAccessToken);
+                    }));
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+        });
     }
 }
