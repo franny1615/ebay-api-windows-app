@@ -12,20 +12,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace ebay_api_inventory.Main.ViewModels;
+namespace ebay_api_inventory.Main.Pages.Login;
 
 public class LoginViewModel
 {
     private string consentToken = string.Empty;
     private EventHandler<UserAccessToken> loggedIn;
-    
+
 
     public LoginViewModel(EventHandler<UserAccessToken> loggedIn)
     {
         this.loggedIn = loggedIn;
     }
 
-    public string OAuthUrl() 
+    public string OAuthUrl()
     {
         AppSettings settings = AppSettings.Get();
         eBaySystem ebaySystem = (eBaySystem)UserSettings.Default.System;
@@ -58,7 +58,7 @@ public class LoginViewModel
         if (uriToCheck.Uri.Contains("https://signin.ebay.com/"))
         {
             string? error = HttpUtility.ParseQueryString(uriToCheck.Uri).Get("error");
-            if(error != null && error == "access_denied")
+            if (error != null && error == "access_denied")
             {
                 return true;
             }
@@ -66,8 +66,8 @@ public class LoginViewModel
 
         return false;
     }
-    
-    public bool IsLoggedIn(CoreWebView2WebResourceRequest uriToCheck) 
+
+    public bool IsLoggedIn(CoreWebView2WebResourceRequest uriToCheck)
     {
         if (uriToCheck.Uri.Contains("https://signin.ebay.com/"))
         {
@@ -76,7 +76,7 @@ public class LoginViewModel
 
             if (code != null && expiresIn != null)
             {
-                this.consentToken = code;
+                consentToken = code;
                 return true;
             }
         }
@@ -91,10 +91,10 @@ public class LoginViewModel
             try
             {
                 AuthToken authToken = new AuthToken();
-                UserAccessToken? userAccessToken = authToken.ExchangeAsync(this.consentToken).Result;
+                UserAccessToken? userAccessToken = authToken.ExchangeAsync(consentToken).Result;
                 if (userAccessToken != null && userAccessToken.access_token != "")
                 {
-                    App.Current.Dispatcher.BeginInvoke(new Action(() =>
+                    System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
                         loggedIn.Invoke(null, userAccessToken);
                     }));

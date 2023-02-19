@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Net.Http;
 using System.Windows;
 using ebay_api_inventory.Main;
-using ebay_api_inventory.Main.ViewModels;
 
 namespace ebay_api_inventory;
 

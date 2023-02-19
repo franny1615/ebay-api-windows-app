@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ebay_api_inventory.Main.ViewModels;
+namespace ebay_api_inventory.Main;
 
 public class MainViewModel
 {

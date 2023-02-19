@@ -1,15 +1,13 @@
 ﻿using System.Windows.Controls;
 using Microsoft.Web.WebView2.Core;
-using ebay_api_inventory.Main.ViewModels;
 using System;
-using System.Threading;
 
-namespace ebay_api_inventory.Main.Pages;
-public partial class Login : Page
+namespace ebay_api_inventory.Main.Pages.Login;
+public partial class LoginPage : Page
 {
     private LoginViewModel loginViewModel;
 
-    public Login(LoginViewModel loginViewModel)
+    public LoginPage(LoginViewModel loginViewModel)
     {
         InitializeComponent();
         this.loginViewModel = loginViewModel;
