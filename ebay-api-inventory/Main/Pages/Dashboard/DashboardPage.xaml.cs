@@ -23,5 +23,6 @@ public partial class DashboardPage : Page
     {
         InitializeComponent();
         this.dashboardViewModel = dashboardViewModel;
+        this.dashboardViewModel.GetMyEbaySelling(pageNumber: 1);
     }
 }
