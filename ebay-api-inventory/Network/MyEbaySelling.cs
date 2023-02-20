@@ -1,17 +1,20 @@
 ﻿using ebay_api_inventory.Entities;
 using ebay_api_inventory.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Automation.Peers;
 using System.Xml.Linq;
 
 namespace ebay_api_inventory.Network;
 
 public class MyEbaySelling
 {
-    public async Task<string> Get(
+    public async Task<List<eBayListing>> Get(
         UserAccessToken accessToken, 
         int entriesPerPage, 
         int pageNumber)
@@ -29,9 +32,8 @@ public class MyEbaySelling
 
         var response = await App.requestClient.SendAsync(request);
         string responseString = await response.Content.ReadAsStringAsync();
-        ParseResponse(responseString);
 
-        return responseString;
+        return ParseResponse(responseString);
     }
 
     private string Url(eBaySystem ebaySystem)
@@ -73,17 +75,71 @@ public class MyEbaySelling
         return new StringContent(bodyWithArgs, Encoding.UTF8, "application/xml");
     }
 
-    private void ParseResponse(string xmlString)
+    private List<eBayListing> ParseResponse(string xmlString)
     {
+        List<eBayListing> listings = new List<eBayListing>();
         XDocument xmlDocument = XDocument.Parse(xmlString);
-        var activeListNodes = xmlDocument.Root?.Element("GetMyEbaySellingResponse")?.Element("ActiveList")?.Elements("ItemArray");
-
-        if (activeListNodes != null)
+        var activeList = xmlDocument.Descendants().Where(p => p.Name.LocalName == "ActiveList");
+        var activeItemArray = activeList.First().Descendants().Where(p => p.Name.LocalName == "ItemArray");
+        var activeItems = activeItemArray.First().Descendants().Where(p => p.Name.LocalName == "Item");
+        foreach(XElement item in activeItems)
         {
-            foreach(var activeNode in activeListNodes)
-            {
-                Debug.WriteLine(activeNode.ToString());
-            }
+            eBayListing listing = new eBayListing();
+            
+            var bestOfferDetails = TryGetFirstNodeFrom(item, "BestOfferDetails");
+            string bestOfferCount = TryGetValueOfFirstFrom(bestOfferDetails, "BestOfferCount");
+            listing.bestOfferCount = int.Parse(bestOfferCount);
+
+            var buyItNow = item.Descendants().First(p => p.Name.LocalName == "BuytItNowPrice");
+            string buyItNowPrice = buyItNow.Value ?? "0.0";
+            string buytItNowCurrency = buyItNow.Attribute("currencyID")?.Value ?? "";
+            listing.buyItNowPrice = double.Parse(buyItNowPrice);
+            listing.currencyType = buytItNowCurrency;
+
+            string ebayNotes = item.Descendants().First(p => p.Name.LocalName == "eBayNotes").Value;
+            listing.ebayNotes = ebayNotes;
+
+            string itemId = item.Descendants().First(p => p.Name.LocalName == "ItemID").Value;
+            listing.itemId = itemId;
+
+            string quantity = item.Descendants().First(p => p.Name.LocalName == "Quantity").Value;
+            listing.quantity = int.Parse(quantity);
+
+            string availableQty = item.Descendants().First(p => p.Name.LocalName == "QuantityAvailable").Value;
+            listing.availableQuantity = int.Parse(availableQty);
+
+            string listingType = item.Descendants().First(p => p.Name.LocalName == "ListingType").Value;
+            listing.listingType = listingType;
+
+            string title = item.Descendants().First(p => p.Name.LocalName == "Title").Value;
+            listing.title = title;
+
+            listings.Add(listing);
+        }
+
+        return listings;
+    }
+
+
+    private XElement? TryGetFirstNodeFrom(XElement? element, string key)
+    {
+        try
+        {
+            return element?.Descendants().First(node => node.Name.LocalName == key);
+        }
+        catch { return null; }
+    }
+
+    private string TryGetValueOfFirstFrom(XElement? element, string key)
+    {
+        try
+        {
+            return TryGetFirstNodeFrom(element, key)?.Value ?? string.Empty;
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            return string.Empty;
         }
     }
 }

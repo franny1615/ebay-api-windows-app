@@ -27,7 +27,7 @@ public class DashboardViewModel
         {
             try
             {
-                string result = myEbaySellingRequest.Get(
+                List<eBayListing> listings = myEbaySellingRequest.Get(
                         userAccessToken,
                         entriesPerPage: entriesPerPage,
                         pageNumber: pageNumber).Result;
