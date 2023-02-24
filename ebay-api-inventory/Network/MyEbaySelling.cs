@@ -3,11 +3,11 @@ using ebay_api_inventory.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Automation.Peers;
 using System.Xml.Linq;
 
 namespace ebay_api_inventory.Network;
@@ -88,31 +88,48 @@ public class MyEbaySelling
             
             var bestOfferDetails = TryGetFirstNodeFrom(item, "BestOfferDetails");
             string bestOfferCount = TryGetValueOfFirstFrom(bestOfferDetails, "BestOfferCount");
-            listing.bestOfferCount = int.Parse(bestOfferCount);
+            int bestOfferCountInt;
+            if (int.TryParse(bestOfferCount, NumberStyles.Number, CultureInfo.InvariantCulture, out bestOfferCountInt))
+            {
+                listing.bestOfferCount = bestOfferCountInt;
+            }
 
-            var buyItNow = item.Descendants().First(p => p.Name.LocalName == "BuytItNowPrice");
-            string buyItNowPrice = buyItNow.Value ?? "0.0";
-            string buytItNowCurrency = buyItNow.Attribute("currencyID")?.Value ?? "";
-            listing.buyItNowPrice = double.Parse(buyItNowPrice);
+            var buyItNow = TryGetFirstNodeFrom(item, "BuyItNowPrice");
+            string buyItNowPrice = buyItNow?.Value ?? "0.0";
+            double buyItNowPriceDouble;
+            if (double.TryParse(buyItNowPrice, NumberStyles.Number, CultureInfo.InvariantCulture, out buyItNowPriceDouble))
+            {
+                listing.buyItNowPrice = buyItNowPriceDouble;
+            }
+
+            string buytItNowCurrency = buyItNow?.Attribute("currencyID")?.Value ?? "";
             listing.currencyType = buytItNowCurrency;
 
-            string ebayNotes = item.Descendants().First(p => p.Name.LocalName == "eBayNotes").Value;
-            listing.ebayNotes = ebayNotes;
+            var ebayNotesNode = TryGetFirstNodeFrom(item, "eBayNotes");
+            listing.ebayNotes = ebayNotesNode?.Value ?? "";
 
-            string itemId = item.Descendants().First(p => p.Name.LocalName == "ItemID").Value;
-            listing.itemId = itemId;
+            var itemId = TryGetFirstNodeFrom(item, "ItemID");
+            listing.itemId = itemId?.Value ?? "";
 
-            string quantity = item.Descendants().First(p => p.Name.LocalName == "Quantity").Value;
-            listing.quantity = int.Parse(quantity);
+            var quantity =TryGetFirstNodeFrom(item, "Quantity");
+            int qty;
+            if (int.TryParse(quantity?.Value ?? "", NumberStyles.Number, CultureInfo.InvariantCulture, out qty)) 
+            {
+                listing.quantity = qty;
+            }
 
-            string availableQty = item.Descendants().First(p => p.Name.LocalName == "QuantityAvailable").Value;
-            listing.availableQuantity = int.Parse(availableQty);
+            var availQuantity = TryGetFirstNodeFrom(item, "QuantityAvailable");
+            int availQty;
+            if (int.TryParse(availQuantity?.Value ?? "", NumberStyles.Number, CultureInfo.InvariantCulture, out availQty))
+            {
+                listing.availableQuantity = availQty;
+            }
 
-            string listingType = item.Descendants().First(p => p.Name.LocalName == "ListingType").Value;
-            listing.listingType = listingType;
+            var listingType = TryGetFirstNodeFrom(item, "ListingType");
+            listing.listingType = listingType?.Value ?? "";
 
-            string title = item.Descendants().First(p => p.Name.LocalName == "Title").Value;
-            listing.title = title;
+            var title = TryGetFirstNodeFrom(item, "Title");
+            listing.title = title?.Value ?? "";
 
             listings.Add(listing);
         }

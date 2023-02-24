@@ -19,7 +19,6 @@ public class LoginViewModel
     private string consentToken = string.Empty;
     private EventHandler<UserAccessToken> loggedIn;
 
-
     public LoginViewModel(EventHandler<UserAccessToken> loggedIn)
     {
         this.loggedIn = loggedIn;

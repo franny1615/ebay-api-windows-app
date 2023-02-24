@@ -2,6 +2,7 @@
 using ebay_api_inventory.Network;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -15,26 +16,38 @@ public class DashboardViewModel
     private MyEbaySelling myEbaySellingRequest;
     private UserAccessToken userAccessToken;
 
+    public ObservableCollection<eBayListing> listings { get; set; }
+
     public DashboardViewModel(UserAccessToken userAccessToken) 
     { 
         this.userAccessToken = userAccessToken;
         myEbaySellingRequest = new MyEbaySelling();
+        listings = new ObservableCollection<eBayListing>();
     }
 
-    public void GetMyEbaySelling(int pageNumber)
+    public void GetMyEbaySelling(int pageNumber, Action<string?> completion)
     {
         Task.Run(() =>
         {
             try
             {
-                List<eBayListing> listings = myEbaySellingRequest.Get(
+                var result = myEbaySellingRequest.Get(
                         userAccessToken,
                         entriesPerPage: entriesPerPage,
                         pageNumber: pageNumber).Result;
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        listings.Add(result[i]);
+                    }
+                    completion(null);
+                }));
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
+                completion(e.Message);
             }
         });
     }
