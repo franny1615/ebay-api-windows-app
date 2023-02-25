@@ -105,8 +105,11 @@ public class MyEbaySelling
             string buytItNowCurrency = buyItNow?.Attribute("currencyID")?.Value ?? "";
             listing.currencyType = buytItNowCurrency;
 
-            var ebayNotesNode = TryGetFirstNodeFrom(item, "eBayNotes");
-            listing.ebayNotes = ebayNotesNode?.Value ?? "";
+            var listingDetailsNode = TryGetFirstNodeFrom(item, "ListingDetails");
+            string startTimeStr = TryGetValueOfFirstFrom(listingDetailsNode, "StartTime");
+            var startTimeDate = DateTime.Parse(startTimeStr, CultureInfo.CurrentCulture);
+            listing.startDateTime = startTimeDate;
+            listing.startTime = startTimeDate.ToUniversalTime().ToString("MM/dd/yyyy");
 
             var itemId = TryGetFirstNodeFrom(item, "ItemID");
             listing.itemId = itemId?.Value ?? "";

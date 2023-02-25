@@ -26,21 +26,21 @@
             <ListView.View>
                 <GridView x:Name="ListingGridView">
                     <GridViewColumn DisplayMemberBinding= "{Binding Path=itemId}" 
-                                Header="Item ID" Width="100"/>
+                                Header="Item ID" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding= "{Binding Path=title}" 
-                                Header="Title" Width="100"/>
+                                Header="Title" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding= "{Binding Path=availableQuantity}" 
-                                Header="Available Stock" Width="100"/>
+                                Header="Available Stock" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding= "{Binding Path=quantity}" 
-                                Header="Total Stock" Width="100"/>
+                                Header="Total Stock" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding= "{Binding Path=buyItNowPrice}" 
-                                Header="Buy It Now Price" Width="100"/>
+                                Header="Buy It Now Price" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding= "{Binding Path=currencyType}" 
-                                Header="Currency" Width="100"/>
+                                Header="Currency" Width="Auto"/>
                     <GridViewColumn DisplayMemberBinding= "{Binding Path=listingType}" 
-                                Header="Listing Type" Width="100"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=ebayNotes}" 
-                                Header="Notes" Width="100"/>
+                                Header="Listing Type" Width="Auto"/>
+                    <GridViewColumn DisplayMemberBinding= "{Binding Path=startTime}" 
+                                Header="StartTime" Width="Auto"/>
                 </GridView>
             </ListView.View>
         </ListView>

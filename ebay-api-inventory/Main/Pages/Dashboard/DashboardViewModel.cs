@@ -35,6 +35,11 @@ public class DashboardViewModel
                         userAccessToken,
                         entriesPerPage: entriesPerPage,
                         pageNumber: pageNumber).Result;
+                result.Sort(delegate (eBayListing a, eBayListing b)
+                {
+                    return a.CompareTo(b);
+                });
+
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     for (int i = 0; i < result.Count; i++)
