@@ -18,33 +18,37 @@
                Margin="10,10,0,0"
                Grid.Row="0"
                FontSize="20"/>
-        <ListView 
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" 
-            Grid.Row="1"
-            ItemsSource="{Binding listings}">
-            <ListView.View>
-                <GridView x:Name="ListingGridView">
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=itemId}" 
-                                Header="Item ID" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=title}" 
-                                Header="Title" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=availableQuantity}" 
-                                Header="Available Stock" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=quantity}" 
-                                Header="Total Stock" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=buyItNowPrice}" 
-                                Header="Buy It Now Price" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=currencyType}" 
-                                Header="Currency" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=listingType}" 
-                                Header="Listing Type" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding= "{Binding Path=startTime}" 
-                                Header="StartTime" Width="Auto"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding Path=storageLocation}"
+        <ScrollViewer x:Name="ListingScrollViewer"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch" 
+                      VerticalScrollBarVisibility="Auto"
+                      PanningMode="VerticalFirst"
+                      Grid.Row="1">
+            <DataGrid x:Name="ListingTable" 
+                      AutoGenerateColumns="False" 
+                      ScrollViewer.PanningMode="None" 
+                      PreviewMouseWheel="ScrollListingTable">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Path=itemId}" 
+                                Header="Item ID" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=title}" 
+                                Header="Title" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=availableQuantity}" 
+                                Header="Available Stock" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=quantity}" 
+                                Header="Total Stock" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=buyItNowPrice}" 
+                                Header="Buy It Now Price" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=currencyType}" 
+                                Header="Currency" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=listingType}" 
+                                Header="Listing Type" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=startTime}" 
+                                Header="StartTime" Width="Auto" IsReadOnly="True"/>
+                    <DataGridTextColumn Binding="{Binding Path=storageLocation}"
                                     Header="Storage Location" Width="Auto" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+                </DataGrid.Columns>
+            </DataGrid>
+        </ScrollViewer>
     </Grid>
 </Page>

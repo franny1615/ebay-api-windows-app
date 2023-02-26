@@ -33,7 +33,13 @@ public partial class DashboardPage : Page
                 return;
             }
 
-            this.DataContext = this.dashboardViewModel;
+            ListingTable.CanUserSortColumns = false;
+            ListingTable.ItemsSource = dashboardViewModel.listings;
         });
+    }
+
+    private void ScrollListingTable(object sender, MouseWheelEventArgs e)
+    {
+        ListingScrollViewer.ScrollToVerticalOffset(ListingScrollViewer.VerticalOffset - e.Delta);
     }
 }
