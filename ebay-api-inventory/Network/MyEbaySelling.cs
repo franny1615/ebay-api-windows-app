@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -156,10 +157,6 @@ public class MyEbaySelling
         {
             return TryGetFirstNodeFrom(element, key)?.Value ?? string.Empty;
         }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e);
-            return string.Empty;
-        }
+        catch { return string.Empty; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using ebay_api_inventory.Entities;
+﻿using ebay_api_inventory.Database;
+using ebay_api_inventory.Entities;
 using ebay_api_inventory.Network;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace ebay_api_inventory.Main.Pages.Dashboard;
 
 public class DashboardViewModel
 {
+    private DatabaseManager dbManager;
     private int entriesPerPage = 200;
     private MyEbaySelling myEbaySellingRequest;
     private UserAccessToken userAccessToken;
@@ -23,6 +25,7 @@ public class DashboardViewModel
         this.userAccessToken = userAccessToken;
         myEbaySellingRequest = new MyEbaySelling();
         listings = new ObservableCollection<eBayListing>();
+        dbManager = new DatabaseManager();
     }
 
     public void GetMyEbaySelling(int pageNumber, Action<string?> completion)
@@ -31,27 +34,31 @@ public class DashboardViewModel
         {
             try
             {
+                // network fetch
                 var result = myEbaySellingRequest.Get(
                         userAccessToken,
                         entriesPerPage: entriesPerPage,
                         pageNumber: pageNumber).Result;
-                result.Sort(delegate (eBayListing a, eBayListing b)
+                // local db sync
+                var syncedInventory = dbManager.syncInventoryWith(inventory: result);
+                // sort by startTime where oldest appear at top.
+                syncedInventory.Sort(delegate (eBayListing a, eBayListing b)
                 {
                     return a.CompareTo(b);
                 });
-
+                // update UI
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    for (int i = 0; i < result.Count; i++)
+                    for (int i = 0; i < syncedInventory.Count; i++)
                     {
-                        listings.Add(result[i]);
+                        listings.Add(syncedInventory[i]);
                     }
                     completion(null);
                 }));
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e);
+                Debug.WriteLine(e.ToString());
                 completion(e.Message);
             }
         });

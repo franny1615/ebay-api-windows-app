@@ -18,6 +18,7 @@ public class eBayListing: IEquatable<eBayListing>, IComparable<eBayListing>
     public int availableQuantity { get; set; }
     public string listingType { get; set; } = "";
     public string title { get; set; } = "";
+    public string storageLocation { get; set; } = "";
 
     public int CompareTo(eBayListing? other)
     {

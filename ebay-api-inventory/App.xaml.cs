@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using System.Windows;
+using ebay_api_inventory.Database;
 using ebay_api_inventory.Main;
 
 namespace ebay_api_inventory;
