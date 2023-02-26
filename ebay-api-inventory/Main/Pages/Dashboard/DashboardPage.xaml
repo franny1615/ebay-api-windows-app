@@ -27,7 +27,8 @@
             <DataGrid x:Name="ListingTable" 
                       AutoGenerateColumns="False" 
                       ScrollViewer.PanningMode="None" 
-                      PreviewMouseWheel="ScrollListingTable">
+                      PreviewMouseWheel="ScrollListingTable"
+                      CellEditEnding="FinishedEditOnListingTable">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Path=itemId}" 
                                 Header="Item ID" Width="Auto" IsReadOnly="True"/>

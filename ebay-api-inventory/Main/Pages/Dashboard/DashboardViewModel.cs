@@ -58,9 +58,15 @@ public class DashboardViewModel
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.ToString());
                 completion(e.Message);
             }
         });
+    }
+
+    public void updateStorageLocationForListingAt(int index, string newStorageLocation)
+    {
+        eBayListing listingToUpdate = listings[index];
+        listingToUpdate.storageLocation = newStorageLocation;
+        dbManager.updatedStorageLocationFor(listingToUpdate);
     }
 }

@@ -78,7 +78,24 @@ public class DatabaseManager
 
     public eBayListing updatedStorageLocationFor(eBayListing listing)
     {
-        // update the record by itemId
+        using(dbConnection)
+        {
+            dbConnection.Open();
+
+            var command = dbConnection.CreateCommand();
+            command.CommandText =
+            @"
+               UPDATE inventoryTable
+               SET 
+                   STORAGE_LOCATION = $storageLocation
+               WHERE 
+                   ITEM_ID = $itemId
+            ";
+            command.Parameters.AddWithValue("$storageLocation", listing.storageLocation);
+            command.Parameters.AddWithValue("$itemId", listing.itemId);
+
+            command.ExecuteNonQuery();
+        }
         return new eBayListing();
     }
 

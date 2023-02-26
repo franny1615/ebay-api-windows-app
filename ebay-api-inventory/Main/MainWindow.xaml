@@ -41,6 +41,7 @@
         <Frame x:Name="NavFrame" 
                Grid.Column="1" 
                Background="#e9ecef"
-               NavigationUIVisibility="Hidden"/>
+               NavigationUIVisibility="Hidden"
+               Navigating="Navigating"/>
     </Grid>
 </Window>

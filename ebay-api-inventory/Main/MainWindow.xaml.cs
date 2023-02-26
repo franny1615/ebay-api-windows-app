@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using ebay_api_inventory.Entities;
 using ebay_api_inventory.Main.Pages.Dashboard;
 using ebay_api_inventory.Main.Pages.Login;
@@ -37,5 +38,10 @@ public partial class MainWindow : Window
         DashboardViewModel dashboardVM = new DashboardViewModel(userAccessToken);
         DashboardPage dashboardPage = new DashboardPage(dashboardVM);
         NavFrame.Navigate(dashboardPage);
+    }
+
+    private void Navigating(object sender, NavigatingCancelEventArgs e)
+    {
+        if (e.NavigationMode == NavigationMode.Back) { e.Cancel = true; }
     }
 }
