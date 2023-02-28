@@ -13,7 +13,7 @@ namespace ebay_api_inventory.Network;
 
 class AuthToken
 {
-    public async Task<UserAccessToken?> ExchangeAsync(string accessToken)
+    public async Task<UserAccessToken?> ExchangeAsync(string accessToken, string grantType)
     {
         AppSettings settings = AppSettings.Get();
         eBaySystem ebaySystem = (eBaySystem) UserSettings.Default.System;
@@ -23,7 +23,7 @@ class AuthToken
 
         var bodyParameters = new Dictionary<string, string>
         {
-            { "grant_type", "authorization_code" },
+            { "grant_type", grantType },
             { "code", accessToken },
             { "redirect_uri",  redirectUrl}
         };

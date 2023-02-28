@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ebay_api_inventory.Entities;
@@ -26,6 +27,7 @@ public class DatabaseManager
         dbFilePath = dbPath + "\\ebayInventory.db";
         dbConnection = new SqliteConnection($"Data Source={dbFilePath}");
         createInventoryDataIfNotExist();
+        createUserAccessTokenTable();
     }
 
     private void createInventoryDataIfNotExist()
@@ -52,6 +54,87 @@ public class DatabaseManager
             ";
 
             command.ExecuteNonQuery();
+        }
+    }
+
+    private void createUserAccessTokenTable()
+    {
+        using(dbConnection)
+        {
+            dbConnection.Open();
+
+            var command = dbConnection.CreateCommand();
+            command.CommandText = @"
+            CREATE TABLE IF NOT EXISTS userAccessTokenTable (
+                INTERNAL_ID INTEGER PRIMARY KEY,
+                ACCESS_TOKEN TEXT,
+                EXPIRES_IN INTEGER,
+                REFRESH_TOKEN TEXT,
+                REFRESH_TOKEN_EXPIRES_IN INTEGER,
+                TOKEN_TYPE TEXT,
+                INSERTED_AT_IN_SECONDS INT
+            )
+            ";
+
+            command.ExecuteNonQuery();
+        }
+    }
+
+    public void insertAccessToken(UserAccessToken token)
+    {
+        using(dbConnection)
+        {
+            dbConnection.Open();
+
+            var command = dbConnection.CreateCommand();
+            command.CommandText = @"
+                DELETE FROM userAccessTokenTable;
+                INSERT INTO userAccessTokenTable 
+                       (ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN, REFRESH_TOKEN_EXPIRES_IN, TOKEN_TYPE, INSERTED_AT_IN_SECONDS)
+                VALUES ($accessToken, $expiresIn, $refreshToken, $refreshTokenExpiresIn, $tokenType, $insertedAtInSeconds);
+            ";
+            command.Parameters.AddWithValue("$accessToken", token.access_token);
+            command.Parameters.AddWithValue("$expiresIn", token.expires_in);
+            command.Parameters.AddWithValue("$refreshToken", token.refresh_token);
+            command.Parameters.AddWithValue("$refreshTokenExpiresIn", token.refresh_token_expires_in);
+            command.Parameters.AddWithValue("$tokenType", token.token_type);
+            command.Parameters.AddWithValue("$insertedAtInSeconds", token.insertedAtInSeconds);
+
+            command.ExecuteNonQuery();
+        }
+    }
+
+    public UserAccessToken? getUserAccessToken()
+    {
+        using(dbConnection)
+        {
+            dbConnection.Open();
+
+            var command = dbConnection.CreateCommand();
+            command.CommandText = @"
+                SELECT ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN, REFRESH_TOKEN_EXPIRES_IN, TOKEN_TYPE
+                FROM userAccessTokenTable;
+            ";
+
+            using (var reader = command.ExecuteReader())
+            {
+                try
+                {
+                    reader.Read(); // there should always only be one user access token stored in DB.
+                    var userAccessToken = new UserAccessToken();
+                    userAccessToken.access_token = reader.GetString(0);
+                    userAccessToken.expires_in = (int)reader.GetInt64(1);
+                    userAccessToken.refresh_token = reader.GetString(2);
+                    userAccessToken.refresh_token_expires_in = (int)reader.GetInt64(3);
+                    userAccessToken.token_type = reader.GetString(4);
+
+                    return userAccessToken;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
         }
     }
 

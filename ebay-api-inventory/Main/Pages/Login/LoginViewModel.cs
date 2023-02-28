@@ -1,14 +1,10 @@
-﻿using ebay_api_inventory.Entities;
+﻿using ebay_api_inventory.Database;
+using ebay_api_inventory.Entities;
 using ebay_api_inventory.Network;
 using ebay_api_inventory.Utilities;
 using Microsoft.Web.WebView2.Core;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -16,12 +12,15 @@ namespace ebay_api_inventory.Main.Pages.Login;
 
 public class LoginViewModel
 {
+    private DatabaseManager dbManager = new DatabaseManager();
+    private UserAccessToken? token;
     private string consentToken = string.Empty;
     private EventHandler<UserAccessToken> loggedIn;
 
     public LoginViewModel(EventHandler<UserAccessToken> loggedIn)
     {
         this.loggedIn = loggedIn;
+        token = dbManager.getUserAccessToken();
     }
 
     public string OAuthUrl()
@@ -66,6 +65,22 @@ public class LoginViewModel
         return false;
     }
 
+    public bool ShouldNavigateToOAuth()
+    {
+        if (token != null)
+        {
+            int nowInSeconds = (int)DateTime.UtcNow.Subtract(DateTime.MinValue).TotalSeconds;
+            int secondsElapsedSinceRefresh = nowInSeconds - token.insertedAtInSeconds;
+            if (secondsElapsedSinceRefresh < token.refresh_token_expires_in) 
+            {
+                loggedIn.Invoke(null, token);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public bool IsLoggedIn(CoreWebView2WebResourceRequest uriToCheck)
     {
         if (uriToCheck.Uri.Contains("https://signin.ebay.com/"))
@@ -90,11 +105,13 @@ public class LoginViewModel
             try
             {
                 AuthToken authToken = new AuthToken();
-                UserAccessToken? userAccessToken = authToken.ExchangeAsync(consentToken).Result;
+                UserAccessToken? userAccessToken = authToken.ExchangeAsync(consentToken, grantType: "authorization_code").Result;
                 if (userAccessToken != null && userAccessToken.access_token != "")
                 {
                     System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
+                        userAccessToken.insertedAtInSeconds = (int) DateTime.UtcNow.Subtract(DateTime.MinValue).TotalSeconds;
+                        dbManager.insertAccessToken(userAccessToken);
                         loggedIn.Invoke(null, userAccessToken);
                     }));
                 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -6,6 +7,7 @@ using ebay_api_inventory.Entities;
 using ebay_api_inventory.Main.Pages.Dashboard;
 using ebay_api_inventory.Main.Pages.Login;
 using ebay_api_inventory.Main.Pages.Settings;
+using ebay_api_inventory.Network;
 
 namespace ebay_api_inventory.Main;
 
@@ -35,7 +37,26 @@ public partial class MainWindow : Window
 
     private void UserLoggedIn(object? sender, UserAccessToken userAccessToken)
     {
-        DashboardViewModel dashboardVM = new DashboardViewModel(userAccessToken);
+        int nowInSeconds = (int)DateTime.UtcNow.Subtract(DateTime.MinValue).TotalSeconds;
+        int secondsElapsedSinceRefresh = nowInSeconds - userAccessToken.insertedAtInSeconds;
+        if (secondsElapsedSinceRefresh > userAccessToken.expires_in)
+        {
+            AuthToken tokenRequest = new AuthToken();
+            UserAccessToken? refreshedToken = tokenRequest.ExchangeAsync(userAccessToken.refresh_token, "").Result;
+            if (refreshedToken != null)
+            {
+                NavigateToDashboard(refreshedToken);
+            }
+        }
+        else
+        {
+            NavigateToDashboard(userAccessToken);
+        }
+    }
+
+    private void NavigateToDashboard(UserAccessToken token)
+    {
+        DashboardViewModel dashboardVM = new DashboardViewModel(token);
         DashboardPage dashboardPage = new DashboardPage(dashboardVM);
         NavFrame.Navigate(dashboardPage);
     }

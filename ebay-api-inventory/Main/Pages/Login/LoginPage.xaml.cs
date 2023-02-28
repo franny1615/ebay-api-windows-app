@@ -23,8 +23,11 @@ public partial class LoginPage : Page
 
     private void NavigateToOAuth()
     {
-        WebView.CoreWebView2.CookieManager.DeleteAllCookies();
-        WebView.Source = new Uri(loginViewModel.OAuthUrl());
+        if (loginViewModel.ShouldNavigateToOAuth())
+        {
+            WebView.CoreWebView2.CookieManager.DeleteAllCookies();
+            WebView.Source = new Uri(loginViewModel.OAuthUrl());
+        }
     }
 
     private void WebResourceResponseReceived(object? sender, CoreWebView2WebResourceResponseReceivedEventArgs e)
