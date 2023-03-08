@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -112,7 +113,7 @@ public class DatabaseManager
 
             var command = dbConnection.CreateCommand();
             command.CommandText = @"
-                SELECT ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN, REFRESH_TOKEN_EXPIRES_IN, TOKEN_TYPE
+                SELECT ACCESS_TOKEN, EXPIRES_IN, REFRESH_TOKEN, REFRESH_TOKEN_EXPIRES_IN, TOKEN_TYPE, INSERTED_AT_IN_SECONDS
                 FROM userAccessTokenTable;
             ";
 
@@ -127,6 +128,7 @@ public class DatabaseManager
                     userAccessToken.refresh_token = reader.GetString(2);
                     userAccessToken.refresh_token_expires_in = (int)reader.GetInt64(3);
                     userAccessToken.token_type = reader.GetString(4);
+                    userAccessToken.insertedAtInSeconds = reader.GetInt64(5);
 
                     return userAccessToken;
                 }

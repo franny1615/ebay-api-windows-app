@@ -37,8 +37,8 @@ public partial class MainWindow : Window
 
     private void UserLoggedIn(object? sender, UserAccessToken userAccessToken)
     {
-        int nowInSeconds = (int)DateTime.UtcNow.Subtract(DateTime.MinValue).TotalSeconds;
-        int secondsElapsedSinceRefresh = nowInSeconds - userAccessToken.insertedAtInSeconds;
+        long nowInSeconds = DateTime.Now.Ticks / TimeSpan.TicksPerSecond;
+        long secondsElapsedSinceRefresh = nowInSeconds - userAccessToken.insertedAtInSeconds;
         if (secondsElapsedSinceRefresh > userAccessToken.expires_in)
         {
             AuthToken tokenRequest = new AuthToken();

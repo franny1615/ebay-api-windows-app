@@ -69,8 +69,8 @@ public class LoginViewModel
     {
         if (token != null)
         {
-            int nowInSeconds = (int)DateTime.UtcNow.Subtract(DateTime.MinValue).TotalSeconds;
-            int secondsElapsedSinceRefresh = nowInSeconds - token.insertedAtInSeconds;
+            long nowInSeconds = DateTime.Now.Ticks/TimeSpan.TicksPerSecond;
+            long secondsElapsedSinceRefresh = nowInSeconds - token.insertedAtInSeconds;
             if (secondsElapsedSinceRefresh < token.refresh_token_expires_in) 
             {
                 loggedIn.Invoke(null, token);
@@ -110,7 +110,7 @@ public class LoginViewModel
                 {
                     System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        userAccessToken.insertedAtInSeconds = (int) DateTime.UtcNow.Subtract(DateTime.MinValue).TotalSeconds;
+                        userAccessToken.insertedAtInSeconds = DateTime.Now.Ticks/TimeSpan.TicksPerSecond;
                         dbManager.insertAccessToken(userAccessToken);
                         loggedIn.Invoke(null, userAccessToken);
                     }));
